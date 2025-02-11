@@ -1,0 +1,56 @@
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { MessageSquare } from "lucide-react";
+import { motion } from "framer-motion";
+
+export default function DiabetesChatbot() {
+  const [messages, setMessages] = useState([
+    { text: "Hello! I'm your Diabetes Health Assistant. How can I help you today?", sender: "bot" }
+  ]);
+  const [input, setInput] = useState("");
+
+  const handleSend = () => {
+    if (!input.trim()) return;
+    const userMessage = { text: input, sender: "user" };
+    setMessages([...messages, userMessage]);
+    setInput("");
+    
+    setTimeout(() => {
+      const botReply = { text: "I'm here to provide guidance on diabetes management. Please ask any questions you have!", sender: "bot" };
+      setMessages((prev) => [...prev, botReply]);
+    }, 1000);
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+      <Card className="w-full max-w-md shadow-lg">
+        <CardContent className="p-4">
+          <div className="h-80 overflow-y-auto flex flex-col space-y-2 p-2 bg-white rounded-md shadow-inner">
+            {messages.map((msg, index) => (
+              <motion.div 
+                key={index} 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className={`p-2 rounded-lg ${msg.sender === "user" ? "bg-blue-500 text-white self-end" : "bg-gray-200 text-gray-800 self-start"}`}
+              >
+                {msg.text}
+              </motion.div>
+            ))}
+          </div>
+          <div className="mt-4 flex space-x-2">
+            <Input 
+              value={input} 
+              onChange={(e) => setInput(e.target.value)} 
+              placeholder="Ask about diabetes..." 
+              className="flex-1"
+            />
+            <Button onClick={handleSend} className="bg-blue-600 text-white">Send</Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
